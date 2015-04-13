@@ -46,6 +46,12 @@ public class FTPClient {
         }
     }
 
+    public long size(String filename) throws IOException {
+        request(FTPCommand.SIZE, filename);
+        FTPResponse response = response();
+        return response.getCode() == 213 ? Long.parseLong(response.getText()) : -1;
+    }
+
     private void request(FTPCommand command, String ... args) throws IOException {
         StringBuilder request = new StringBuilder(command.toString());
         for (String arg : args) {
