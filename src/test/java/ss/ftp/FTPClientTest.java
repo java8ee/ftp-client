@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class FTPClientTest {
     private static Properties properties;
@@ -27,7 +29,7 @@ public class FTPClientTest {
     }
 
     @After
-    public void tearDown() throws IOException {
+    public void tearDown() {
         ftp.close();
     }
 
@@ -45,6 +47,15 @@ public class FTPClientTest {
         assertEquals("Incorrect file size for filename = " + filename, -1, size);
     }
 
+    @Test
+    public void testList() throws IOException {
+        FTPFile[] files = ftp.list(null);
+        assertNotNull("FTP directory is empty", files);
+        for (FTPFile file : files) {
+            assertNotNull("Null file name", file.getName());
+            assertTrue("File size " + file.getName() + " >= 0 bytes", file.getSize() >= 0);
+        }
+    }
 
     private static String getString(String suffix) {
         return (String) properties.get("ftp." + suffix);
